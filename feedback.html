@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="ux-version" content="pb-03c-consumer-ux-v1">
+  <title>التغذية الراجعة</title>
+  <style>
+    :root { color-scheme: dark; font-family: "Segoe UI", "Cairo", system-ui, sans-serif; }
+    * { box-sizing: border-box; min-width: 0; }
+    html, body { max-width: 100%; overflow-x: hidden; }
+    body { margin: 0; background: #08101f; color: #eef2ff; line-height: 1.7; font-size: 16px; }
+    main { width: min(100%, 980px); margin: 0 auto; padding: 12px; }
+    @media (min-width: 640px) { main { padding: 24px 16px; } }
+    @media (min-width: 1024px) { main { padding: 40px 0; } }
+    .panel { background: #121b31; border: 1px solid #2a385f; border-radius: 16px; padding: 16px; margin-bottom: 14px; overflow-wrap: anywhere; }
+    @media (min-width: 640px) { .panel { padding: 24px; margin-bottom: 18px; } }
+    h1, h2, h3, p { overflow-wrap: anywhere; }
+    h1 { font-size: clamp(1.65rem, 5vw, 2.6rem); line-height: 1.25; margin: 10px 0; }
+    h2 { font-size: clamp(1.2rem, 3.5vw, 1.55rem); margin: 10px 0; }
+    h3 { margin: 8px 0; }
+    p { margin: 7px 0; }
+    a { color: #c8d8ff; }
+    nav { margin: 10px 0 16px; }
+    .badge { display: inline-block; background: #26385f; border-radius: 999px; padding: 4px 10px; margin: 0 0 8px 6px; font-size: .82rem; }
+    .badge.warning { background: #633333; }
+    .badge.state-final { background: #1a4a1a; }
+    .badge.state-live { background: #4a1a1a; }
+    .badge.state-pending { background: #4a3a1a; }
+    .badge.state-cancelled { background: #2a2a2a; }
+    .button, button { display: inline-block; border: 0; padding: 11px 16px; background: #dbe7ff; color: #10203f; border-radius: 10px; text-decoration: none; font-weight: 700; cursor: pointer; }
+    .section-label { color: #9bacce; font-size: .82rem; font-weight: 700; margin-bottom: 6px; }
+    .hero { border-color: #5278d8; background: linear-gradient(145deg, #152448, #101a31); }
+    .hero-insight { font-size: clamp(1.25rem, 4vw, 1.8rem); font-weight: 800; line-height: 1.45; }
+    .subtle { color: #a9b7d3; font-size: .92rem; }
+    .grid, .comparison-grid, .metric-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    @media (min-width: 640px) { .grid { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); } .comparison-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .metric-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+    .metric-card { background: #0f1a2e; border: 1px solid #2b4071; border-radius: 12px; padding: 14px; overflow-wrap: anywhere; }
+    .metric-card strong { display: block; font-size: 1.35rem; margin-top: 4px; }
+    .comparison-card { background: #0f1a2e; border: 1px solid #263b69; border-radius: 12px; padding: 14px; }
+    .comparison-values { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
+    .comparison-values div { background: #121f38; border-radius: 9px; padding: 10px; }
+    .verdict { border-inline-start: 4px solid #6ea2ff; padding-inline-start: 14px; font-size: 1.05rem; }
+    .positive { color: #9fe2a4; }
+    .caution { color: #ffd28a; }
+    .freshness-row { color: #93a3c2; border-top: 1px solid #29385a; margin-top: 12px; padding-top: 9px; font-size: .82rem; }
+    .disclaimer-box { background: #1a1f30; border: 1px solid #3a4060; border-radius: 10px; padding: 11px; color: #a9b7d3; font-size: .86rem; }
+    .unavailable-box { background: #1a1a1a; border: 1px solid #333; border-radius: 10px; padding: 12px; color: #a9a9a9; }
+    details { margin-top: 12px; }
+    summary { cursor: pointer; font-weight: 700; color: #c8d8ff; }
+    pre { max-width: 100%; overflow-x: auto; white-space: pre-wrap; overflow-wrap: anywhere; background: #080d18; border: 1px solid #26314c; border-radius: 10px; padding: 12px; font-size: .76rem; }
+    label { display: block; font-weight: 700; margin: 14px 0 5px; }
+    select, textarea { width: 100%; max-width: 100%; border: 1px solid #405176; border-radius: 10px; padding: 11px; background: #0d1729; color: #eef2ff; font: inherit; }
+    textarea { min-height: 90px; resize: vertical; }
+    .radio-row { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+    .radio-row label { display: inline-flex; gap: 6px; align-items: center; margin: 4px 0; font-weight: 500; }
+    .copy-status { min-height: 1.5em; color: #9fe2a4; margin-top: 8px; }
+    footer { color: #71809d; margin-top: 28px; border-top: 1px solid #1e2940; padding-top: 14px; font-size: .8rem; overflow-wrap: anywhere; }
+  </style>
+</head>
+<body><main>
+<nav aria-label="التنقل"><a href="index.html">← العودة إلى الرئيسية</a></nav>
+<section class="panel" aria-labelledby="feedback-heading">
+  <span class="badge">مراجعة خاصة</span>
+  <h1 id="feedback-heading">شارك رأيك في التجربة</h1>
+  <div class="disclaimer-box">الإجابات تبقى داخل جهازك. لا يوجد إرسال أو تخزين أو تتبع. زر النسخ ينقل النص إلى الحافظة فقط.</div>
+  <form id="feedback-form" onsubmit="return false;">
+    <label for="clarity">وضوح المحتوى من 1 إلى 10</label>
+    <select id="clarity" name="clarity"><option value="">اختر</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option></select>
+    <label for="trust">الثقة في طريقة عرض التوقع من 1 إلى 10</label>
+    <select id="trust" name="trust"><option value="">اختر</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option></select>
+    <fieldset><legend>هل ستعود بعد المباراة القادمة؟</legend><div class="radio-row">
+      <label><input type="radio" name="return_intent" value="نعم"> نعم</label>
+      <label><input type="radio" name="return_intent" value="ربما"> ربما</label>
+      <label><input type="radio" name="return_intent" value="لا"> لا</label>
+    </div></fieldset>
+    <label for="problem">أكبر مشكلة واجهتك</label><textarea id="problem" name="problem"></textarea>
+    <label for="best">أفضل جانب في التجربة</label><textarea id="best" name="best"></textarea>
+    <label for="value">التغيير الواحد الذي يضيف أكبر قيمة</label><textarea id="value" name="value"></textarea>
+    <button id="copy-feedback" type="button">نسخ الردود</button>
+    <p id="copy-status" class="copy-status" role="status" aria-live="polite"></p>
+  </form>
+</section>
+<footer>لا نقطة إرسال عامة · لا بيانات شخصية · لا تحليلات استخدام</footer>
+</main><script>
+(function () {
+  const button = document.getElementById('copy-feedback');
+  const status = document.getElementById('copy-status');
+  const successMessage = 'تم نسخ الردود. أرسلها عبر قناة المراجعة الخاصة.';
+  const failureMessage = 'تعذر نسخ الردود تلقائيًا. حدّد النص وانسخه يدويًا.';
+  const value = (id) => document.getElementById(id).value || 'لم يُجب';
+
+  async function copyText(text) {
+    if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch (error) {
+        // Continue to the local fallback.
+      }
+    }
+
+    const area = document.createElement('textarea');
+    area.value = text;
+    document.body.appendChild(area);
+    area.select();
+    try {
+      return document.execCommand('copy') === true;
+    } catch (error) {
+      return false;
+    } finally {
+      area.remove();
+    }
+  }
+
+  button.addEventListener('click', async function () {
+    const selected = document.querySelector('input[name="return_intent"]:checked');
+    const text = [
+      'وضوح المحتوى: ' + value('clarity') + '/10',
+      'الثقة: ' + value('trust') + '/10',
+      'نية العودة: ' + (selected ? selected.value : 'لم يُجب'),
+      'أكبر مشكلة: ' + value('problem'),
+      'أفضل جانب: ' + value('best'),
+      'أكبر قيمة: ' + value('value')
+    ].join('\n');
+    const copied = await copyText(text);
+    status.textContent = copied ? successMessage : failureMessage;
+  });
+}());
+</script></body>
+</html>

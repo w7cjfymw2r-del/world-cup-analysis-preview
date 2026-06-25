@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="ux-version" content="pb-03c-consumer-ux-v1">
+  <title>محرك تحليل اللاعبين — تجربة المستخدم</title>
+  <style>
+    :root { color-scheme: dark; font-family: "Segoe UI", "Cairo", system-ui, sans-serif; }
+    * { box-sizing: border-box; min-width: 0; }
+    html, body { max-width: 100%; overflow-x: hidden; }
+    body { margin: 0; background: #08101f; color: #eef2ff; line-height: 1.7; font-size: 16px; }
+    main { width: min(100%, 980px); margin: 0 auto; padding: 12px; }
+    @media (min-width: 640px) { main { padding: 24px 16px; } }
+    @media (min-width: 1024px) { main { padding: 40px 0; } }
+    .panel { background: #121b31; border: 1px solid #2a385f; border-radius: 16px; padding: 16px; margin-bottom: 14px; overflow-wrap: anywhere; }
+    @media (min-width: 640px) { .panel { padding: 24px; margin-bottom: 18px; } }
+    h1, h2, h3, p { overflow-wrap: anywhere; }
+    h1 { font-size: clamp(1.65rem, 5vw, 2.6rem); line-height: 1.25; margin: 10px 0; }
+    h2 { font-size: clamp(1.2rem, 3.5vw, 1.55rem); margin: 10px 0; }
+    h3 { margin: 8px 0; }
+    p { margin: 7px 0; }
+    a { color: #c8d8ff; }
+    nav { margin: 10px 0 16px; }
+    .badge { display: inline-block; background: #26385f; border-radius: 999px; padding: 4px 10px; margin: 0 0 8px 6px; font-size: .82rem; }
+    .badge.warning { background: #633333; }
+    .badge.state-final { background: #1a4a1a; }
+    .badge.state-live { background: #4a1a1a; }
+    .badge.state-pending { background: #4a3a1a; }
+    .badge.state-cancelled { background: #2a2a2a; }
+    .button, button { display: inline-block; border: 0; padding: 11px 16px; background: #dbe7ff; color: #10203f; border-radius: 10px; text-decoration: none; font-weight: 700; cursor: pointer; }
+    .section-label { color: #9bacce; font-size: .82rem; font-weight: 700; margin-bottom: 6px; }
+    .hero { border-color: #5278d8; background: linear-gradient(145deg, #152448, #101a31); }
+    .hero-insight { font-size: clamp(1.25rem, 4vw, 1.8rem); font-weight: 800; line-height: 1.45; }
+    .subtle { color: #a9b7d3; font-size: .92rem; }
+    .grid, .comparison-grid, .metric-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    @media (min-width: 640px) { .grid { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); } .comparison-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .metric-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+    .metric-card { background: #0f1a2e; border: 1px solid #2b4071; border-radius: 12px; padding: 14px; overflow-wrap: anywhere; }
+    .metric-card strong { display: block; font-size: 1.35rem; margin-top: 4px; }
+    .comparison-card { background: #0f1a2e; border: 1px solid #263b69; border-radius: 12px; padding: 14px; }
+    .comparison-values { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
+    .comparison-values div { background: #121f38; border-radius: 9px; padding: 10px; }
+    .verdict { border-inline-start: 4px solid #6ea2ff; padding-inline-start: 14px; font-size: 1.05rem; }
+    .positive { color: #9fe2a4; }
+    .caution { color: #ffd28a; }
+    .freshness-row { color: #93a3c2; border-top: 1px solid #29385a; margin-top: 12px; padding-top: 9px; font-size: .82rem; }
+    .disclaimer-box { background: #1a1f30; border: 1px solid #3a4060; border-radius: 10px; padding: 11px; color: #a9b7d3; font-size: .86rem; }
+    .unavailable-box { background: #1a1a1a; border: 1px solid #333; border-radius: 10px; padding: 12px; color: #a9a9a9; }
+    details { margin-top: 12px; }
+    summary { cursor: pointer; font-weight: 700; color: #c8d8ff; }
+    pre { max-width: 100%; overflow-x: auto; white-space: pre-wrap; overflow-wrap: anywhere; background: #080d18; border: 1px solid #26314c; border-radius: 10px; padding: 12px; font-size: .76rem; }
+    label { display: block; font-weight: 700; margin: 14px 0 5px; }
+    select, textarea { width: 100%; max-width: 100%; border: 1px solid #405176; border-radius: 10px; padding: 11px; background: #0d1729; color: #eef2ff; font: inherit; }
+    textarea { min-height: 90px; resize: vertical; }
+    .radio-row { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+    .radio-row label { display: inline-flex; gap: 6px; align-items: center; margin: 4px 0; font-weight: 500; }
+    .copy-status { min-height: 1.5em; color: #9fe2a4; margin-top: 8px; }
+    footer { color: #71809d; margin-top: 28px; border-top: 1px solid #1e2940; padding-top: 14px; font-size: .8rem; overflow-wrap: anywhere; }
+  </style>
+</head>
+<body><main><header class="panel"><span class="badge">نسخة تجريبية خاصة</span><span class="badge warning">ليست توقعات تشغيلية</span><h1>قصة اللاعب قبل المباراة وبعدها</h1><p class="subtle">توقع مجمّد، نتيجة فعلية، ثم تقييم واضح لما أصابه النموذج وما أخطأ فيه.</p><nav aria-label="التنقل الرئيسي"><a href="index.html">الرئيسية</a> · <a href="feedback.html">شارك رأيك</a></nav></header>
+<section class="panel hero" aria-labelledby="hero-heading"><div class="section-label">الخلاصة في جملة</div><h2 id="hero-heading" class="hero-insight">منحنا يوان ويسا احتمال تسجيل 14% — لكنه سجل بالفعل.</h2><p class="verdict">اقترب النموذج من توقع المشاركة أساسيًا، وكان خطأ الدقائق 6.7 فقط، لكنه قلّل احتمال التسجيل بوضوح.</p><a class="button" href="players/yoane-wissa.html">شاهد التوقع مقابل الحقيقة</a></section>
+<section class="panel" aria-labelledby="match-heading"><div class="section-label">المباراة المُقيّمة</div><h2 id="match-heading">الكونغو الديمقراطية ضد غينيا</h2><p>كأس الأمم الأفريقية · 2 فبراير 2024 — 10:00 مساءً</p><span class="badge state-final" data-match-state="FINAL">نهائي</span></section>
+<section aria-labelledby="players-heading"><h2 id="players-heading">اللاعب المميز</h2><div class="grid"><article class="panel"><h3>يوان ويسا</h3><p>جناح أيسر · الكونغو الديمقراطية</p><p class="subtle">خطأ الدقائق: 6.7 دقيقة · التقييم: مكتمل</p><a class="button" href="players/yoane-wissa.html">عرض التحليل</a></article></div></section>
+<section class="panel" aria-labelledby="loop-heading"><h2 id="loop-heading">كيف تعمل حلقة حقيقة اللاعب؟</h2><p>نتوقع قبل المباراة ← نثبت التوقع ← نسجل ما حدث ← نقيم الفرق ← نقرر ماذا نتعلم.</p></section>
+<details class="panel technical-details"><summary>المصادر والتفاصيل التقنية</summary><p>المصدر: StatsBomb Open Data</p><p>آخر فحص: 2 مايو 2026 — 5:23 مساءً</p><p>التصنيف: DEMO_ONLY · public_release_eligible: false</p></details>
+<footer>إصدار تجربة المستخدم: pb-03c-consumer-ux-v1 · مشروع مستقل غير مرتبط رسميًا بـ FIFA</footer></main></body>
+</html>

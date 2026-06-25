@@ -1,0 +1,78 @@
+{
+  "canonical_record_digest": "94635b0743ffd7267c436e268aedab3ff1d934bd8d3ba7f9cb55ca4ed8659638",
+  "classification": "DEMO_ONLY",
+  "files": [
+    {
+      "bytes": 8844,
+      "path": "feedback.html",
+      "sha256": "64ab0248322967bc3ceda679ef8f1e454009183649341fed77675c6fcc5e75af"
+    },
+    {
+      "bytes": 7338,
+      "path": "index.html",
+      "sha256": "29463cbecf6ed9d7b673366e9004304711d0e398e64c6d31094ebc48e2c307e0"
+    },
+    {
+      "bytes": 27089,
+      "path": "players/yoane-wissa.html",
+      "sha256": "05fba590a5e8f5936921706e6f278d75f222b2c70c67c9d63808df1cf1eec459"
+    }
+  ],
+  "manifest_id": "PB-GOLDEN-891aeb7c0113c103",
+  "provider": "statsbomb_open_data",
+  "public_release_eligible": false,
+  "record_file": {
+    "bytes": 24055,
+    "path": "golden-player-record.json",
+    "sha256": "f9af81fedf48bb823447764386e55419ea578da76158b87f810106a0727c6759"
+  },
+  "record_id": "PB-GOLDEN-7294-3922356-v1",
+  "record_sha256": "f9af81fedf48bb823447764386e55419ea578da76158b87f810106a0727c6759",
+  "release_version": "pb-03b-golden-player-release-v1",
+  "site_version": "public-beta-website-shell-v1",
+  "source_fixture": {
+    "competition_id": 1267,
+    "files": {
+      "events.json": {
+        "bytes": 3216159,
+        "sha256": "e03530c4e451f8b76e131a37773c7b8d7088e2d0c8814d168922c4f5b6f5663d"
+      },
+      "lineups.json": {
+        "bytes": 23249,
+        "sha256": "464e04cc4f25de3b2b984878e432e638da84b5a565493cf7c9c0d83f79d27a17"
+      },
+      "match.json": {
+        "bytes": 1849,
+        "sha256": "dfd07f3d3599e7c901f548e1d75e7cf8b6143114e535c02294b58998effd11fd"
+      }
+    },
+    "match_id": 3922240,
+    "provider": "statsbomb_open_data",
+    "season_id": 107,
+    "upstream_commit": "b0bc9f22dd77c206ddedc1d742893b3bbe64baec",
+    "upstream_repository": "statsbomb/open-data"
+  },
+  "target_fixture": {
+    "competition_id": 1267,
+    "files": {
+      "events.json": {
+        "bytes": 2294173,
+        "sha256": "3dc2d18551e3e54de436362e2b8fd6e85fda426e8afa8569bd7334fd4ac16a13"
+      },
+      "lineups.json": {
+        "bytes": 22190,
+        "sha256": "980bb4ff842cb2f72260ded76ecf3403c5033bcb3e0ab0339f0699d17ed8b6ad"
+      },
+      "match.json": {
+        "bytes": 1840,
+        "sha256": "fe245d7e6a38e33d7beaf9a50e28edc0ca09825c97f5fc35cec36e84175f2c0e"
+      }
+    },
+    "match_id": 3922356,
+    "provider": "statsbomb_open_data",
+    "season_id": 107,
+    "upstream_commit": "b0bc9f22dd77c206ddedc1d742893b3bbe64baec",
+    "upstream_repository": "statsbomb/open-data"
+  },
+  "upstream_commit": "b0bc9f22dd77c206ddedc1d742893b3bbe64baec"
+}

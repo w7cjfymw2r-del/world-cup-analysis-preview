@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="ux-version" content="pb-03c-consumer-ux-v1">
+  <title>تحليل يوان ويسا</title>
+  <style>
+    :root { color-scheme: dark; font-family: "Segoe UI", "Cairo", system-ui, sans-serif; }
+    * { box-sizing: border-box; min-width: 0; }
+    html, body { max-width: 100%; overflow-x: hidden; }
+    body { margin: 0; background: #08101f; color: #eef2ff; line-height: 1.7; font-size: 16px; }
+    main { width: min(100%, 980px); margin: 0 auto; padding: 12px; }
+    @media (min-width: 640px) { main { padding: 24px 16px; } }
+    @media (min-width: 1024px) { main { padding: 40px 0; } }
+    .panel { background: #121b31; border: 1px solid #2a385f; border-radius: 16px; padding: 16px; margin-bottom: 14px; overflow-wrap: anywhere; }
+    @media (min-width: 640px) { .panel { padding: 24px; margin-bottom: 18px; } }
+    h1, h2, h3, p { overflow-wrap: anywhere; }
+    h1 { font-size: clamp(1.65rem, 5vw, 2.6rem); line-height: 1.25; margin: 10px 0; }
+    h2 { font-size: clamp(1.2rem, 3.5vw, 1.55rem); margin: 10px 0; }
+    h3 { margin: 8px 0; }
+    p { margin: 7px 0; }
+    a { color: #c8d8ff; }
+    nav { margin: 10px 0 16px; }
+    .badge { display: inline-block; background: #26385f; border-radius: 999px; padding: 4px 10px; margin: 0 0 8px 6px; font-size: .82rem; }
+    .badge.warning { background: #633333; }
+    .badge.state-final { background: #1a4a1a; }
+    .badge.state-live { background: #4a1a1a; }
+    .badge.state-pending { background: #4a3a1a; }
+    .badge.state-cancelled { background: #2a2a2a; }
+    .button, button { display: inline-block; border: 0; padding: 11px 16px; background: #dbe7ff; color: #10203f; border-radius: 10px; text-decoration: none; font-weight: 700; cursor: pointer; }
+    .section-label { color: #9bacce; font-size: .82rem; font-weight: 700; margin-bottom: 6px; }
+    .hero { border-color: #5278d8; background: linear-gradient(145deg, #152448, #101a31); }
+    .hero-insight { font-size: clamp(1.25rem, 4vw, 1.8rem); font-weight: 800; line-height: 1.45; }
+    .subtle { color: #a9b7d3; font-size: .92rem; }
+    .grid, .comparison-grid, .metric-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    @media (min-width: 640px) { .grid { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); } .comparison-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .metric-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+    .metric-card { background: #0f1a2e; border: 1px solid #2b4071; border-radius: 12px; padding: 14px; overflow-wrap: anywhere; }
+    .metric-card strong { display: block; font-size: 1.35rem; margin-top: 4px; }
+    .comparison-card { background: #0f1a2e; border: 1px solid #263b69; border-radius: 12px; padding: 14px; }
+    .comparison-values { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
+    .comparison-values div { background: #121f38; border-radius: 9px; padding: 10px; }
+    .verdict { border-inline-start: 4px solid #6ea2ff; padding-inline-start: 14px; font-size: 1.05rem; }
+    .positive { color: #9fe2a4; }
+    .caution { color: #ffd28a; }
+    .freshness-row { color: #93a3c2; border-top: 1px solid #29385a; margin-top: 12px; padding-top: 9px; font-size: .82rem; }
+    .disclaimer-box { background: #1a1f30; border: 1px solid #3a4060; border-radius: 10px; padding: 11px; color: #a9b7d3; font-size: .86rem; }
+    .unavailable-box { background: #1a1a1a; border: 1px solid #333; border-radius: 10px; padding: 12px; color: #a9a9a9; }
+    details { margin-top: 12px; }
+    summary { cursor: pointer; font-weight: 700; color: #c8d8ff; }
+    pre { max-width: 100%; overflow-x: auto; white-space: pre-wrap; overflow-wrap: anywhere; background: #080d18; border: 1px solid #26314c; border-radius: 10px; padding: 12px; font-size: .76rem; }
+    label { display: block; font-weight: 700; margin: 14px 0 5px; }
+    select, textarea { width: 100%; max-width: 100%; border: 1px solid #405176; border-radius: 10px; padding: 11px; background: #0d1729; color: #eef2ff; font: inherit; }
+    textarea { min-height: 90px; resize: vertical; }
+    .radio-row { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+    .radio-row label { display: inline-flex; gap: 6px; align-items: center; margin: 4px 0; font-weight: 500; }
+    .copy-status { min-height: 1.5em; color: #9fe2a4; margin-top: 8px; }
+    footer { color: #71809d; margin-top: 28px; border-top: 1px solid #1e2940; padding-top: 14px; font-size: .8rem; overflow-wrap: anywhere; }
+  </style>
+</head>
+<body><main><nav aria-label="التنقل"><a href="../index.html">← العودة إلى الرئيسية</a></nav>
+<header class="panel"><span class="badge">نسخة تجريبية خاصة</span><span class="badge warning">ليست توقعات تشغيلية</span><h1>يوان ويسا</h1><p>جناح أيسر · الكونغو الديمقراطية</p></header>
+<section class="panel hero" data-section="1-player-story"><div class="section-label">١. قصة اللاعب</div><h2 class="hero-insight">منحنا يوان ويسا احتمال تسجيل 14% — لكنه سجل بالفعل.</h2><p>في المباراة التي قيّمناها شارك يوان ويسا لمدة 83.8 دقيقة، وسجل هدفًا ولم يصنع هدفًا ولم يحصل على بطاقة صفراء.</p></section>
+<section class="panel" data-section="2-next-match-forecast"><div class="section-label">٢. التوقع الذي نشرناه قبل المباراة</div><h2>توقع تجريبي · ثقة منخفضة إلى متوسطة</h2><p class="subtle">ثُبّت في 29 يناير 2024 — 2:00 صباحًا</p><div class="metric-grid"><div class="metric-card"><span class="section-label">أساسيًا</span><strong>73%</strong></div><div class="metric-card"><span class="section-label">الدقائق</span><strong>77.1 دقيقة</strong></div><div class="metric-card"><span class="section-label">التسجيل</span><strong>14%</strong></div><div class="metric-card"><span class="section-label">الصناعة</span><strong>9%</strong></div><div class="metric-card"><span class="section-label">بطاقة صفراء</span><strong>12%</strong></div></div></section>
+<section class="panel" data-section="3-model-rationale"><div class="section-label">٣. لماذا خرج التوقع هكذا؟</div><p>استخدم النموذج الأساسي الشفاف سجل مباراة المصدر مع معدلات مرجعية عامة لإنتاج التوقع.</p></section>
+<section class="panel" data-section="4-confidence-limitations"><div class="section-label">٤. حدود الثقة</div><p>صُنفت الثقة منخفضة إلى متوسطة اعتمادًا على 1 مباراة مصدر فقط، لذلك لا توجد مطالبة بالمعايرة أو الدقة التشغيلية.</p></section>
+<section class="panel" data-section="5-forecast-vs-reality"><div class="section-label">٥. التوقع مقابل الحقيقة</div><h2>مقارنة سريعة</h2><div class="comparison-grid"><article class="comparison-card"><h3>المشاركة أساسيًا</h3><div class="comparison-values"><div><span class="section-label">التوقع</span><strong>73%</strong></div><div><span class="section-label">الفعلي</span><strong>نعم</strong></div></div></article><article class="comparison-card"><h3>الدقائق</h3><div class="comparison-values"><div><span class="section-label">التوقع</span><strong>77.1 دقيقة</strong></div><div><span class="section-label">الفعلي</span><strong>83.8 دقيقة</strong></div></div></article><article class="comparison-card"><h3>التسجيل</h3><div class="comparison-values"><div><span class="section-label">التوقع</span><strong>14%</strong></div><div><span class="section-label">الفعلي</span><strong>نعم</strong></div></div></article><article class="comparison-card"><h3>صناعة هدف</h3><div class="comparison-values"><div><span class="section-label">التوقع</span><strong>9%</strong></div><div><span class="section-label">الفعلي</span><strong>لا</strong></div></div></article><article class="comparison-card"><h3>بطاقة صفراء</h3><div class="comparison-values"><div><span class="section-label">التوقع</span><strong>12%</strong></div><div><span class="section-label">الفعلي</span><strong>لا</strong></div></div></article></div></section>
+<section class="panel" data-section="6-forecast-evaluation"><div class="section-label">٦. حكم النموذج على نفسه</div><p class="verdict">اقترب النموذج من توقع المشاركة أساسيًا، وكان خطأ الدقائق 6.7 فقط، لكنه قلّل احتمال التسجيل بوضوح.</p><div class="metric-grid"><div class="metric-card"><span class="section-label">خطأ الدقائق</span><strong>6.7 دقيقة</strong></div><div class="metric-card"><span class="section-label">حجم العينة</span><strong>مباراة واحدة</strong></div><div class="metric-card"><span class="section-label">حالة التقييم</span><strong>مكتمل</strong></div></div><p>هذه حالة واحدة فقط، لذلك نستخدمها للتعلم ولا ندّعي أن جودة الاحتمالات معايرة أو جاهزة للتشغيل.</p></section>
+<section class="panel" data-section="7-what-changed"><div class="section-label">٧. ماذا سنتعلم؟</div><h2>جمع مباريات محلولة إضافية قبل تغيير النموذج</h2><p>توصية التعلم المسجلة هي جمع نتائج أهداف محلولة إضافية، ولا يُطبّق أي تعديل تلقائي.</p></section>
+<section class="panel" data-section="8-sources-lineage"><div class="section-label">٨. المصادر والثقة في البيانات</div><p>المصدر المنظم هو StatsBomb Open Data من لقطة مثبتة للمستودع statsbomb/open-data مع نسب وترخيص موثقين.</p><p class="subtle">آخر فحص: 2 مايو 2026 — 5:23 مساءً</p><p>لا توجد تعارضات مفتوحة.</p><details class="technical-details"><summary>عرض الأدلة والتفاصيل التقنية</summary><details class="technical-details"><summary>التوقع المجمّد الكامل</summary><pre dir="ltr">{
+  &quot;abstention&quot;: {
+    &quot;abstained&quot;: false,
+    &quot;reasons&quot;: []
+  },
+  &quot;confidence&quot;: {
+    &quot;band&quot;: &quot;LOW_TO_MEDIUM&quot;,
+    &quot;reasons&quot;: [
+      &quot;Only one historical match contributes player-specific evidence.&quot;,
+      &quot;The source match contains at least 60 minutes of exposure.&quot;,
+      &quot;Lineup position intervals are available.&quot;,
+      &quot;Shot-quality observations are available.&quot;
+    ],
+    &quot;sample_matches&quot;: 1,
+    &quot;score&quot;: 0.4
+  },
+  &quot;data_lineage&quot;: {
+    &quot;events_file_sha256&quot;: &quot;e03530c4e451f8b76e131a37773c7b8d7088e2d0c8814d168922c4f5b6f5663d&quot;,
+    &quot;provider&quot;: &quot;statsbomb_open_data&quot;,
+    &quot;upstream_commit&quot;: &quot;b0bc9f22dd77c206ddedc1d742893b3bbe64baec&quot;,
+    &quot;upstream_repository&quot;: &quot;statsbomb/open-data&quot;
+  },
+  &quot;forecast&quot;: {
+    &quot;assist_probability&quot;: 0.092,
+    &quot;expected_minutes&quot;: 77.06,
+    &quot;goal_probability&quot;: 0.1407,
+    &quot;starting_probability&quot;: 0.7333,
+    &quot;yellow_card_probability&quot;: 0.1167
+  },
+  &quot;forecast_status&quot;: &quot;PROVISIONAL&quot;,
+  &quot;forecast_version&quot;: &quot;player-forecast-baseline-v1&quot;,
+  &quot;freeze_state&quot;: &quot;FROZEN&quot;,
+  &quot;generated_at&quot;: &quot;2024-01-29T00:00:00+00:00&quot;,
+  &quot;limitations&quot;: [
+    &quot;Development baseline only; not eligible for public prediction claims.&quot;,
+    &quot;The target is the next available match and has not been resolved to a fixture.&quot;,
+    &quot;Only one historical match contributes player-specific evidence.&quot;,
+    &quot;Strong population priors dominate the player-specific observation.&quot;,
+    &quot;No opponent, lineup-news, form-window, workload, weather, or tactical context.&quot;,
+    &quot;The source match occurred before this forecast record and is not the target match.&quot;
+  ],
+  &quot;model_inputs_summary&quot;: {
+    &quot;source_assists&quot;: 0,
+    &quot;source_cards&quot;: 0,
+    &quot;source_goals&quot;: 0,
+    &quot;source_minutes&quot;: 87.18,
+    &quot;source_shots&quot;: 2,
+    &quot;source_started&quot;: true,
+    &quot;source_xg&quot;: 0.1196
+  },
+  &quot;model_version&quot;: &quot;transparent-gamma-poisson-baseline-v1&quot;,
+  &quot;player&quot;: {
+    &quot;player_id&quot;: 7294,
+    &quot;player_name&quot;: &quot;Yoane Wissa&quot;,
+    &quot;team_id&quot;: 4881,
+    &quot;team_name&quot;: &quot;Congo DR&quot;
+  },
+  &quot;prediction_id&quot;: &quot;NEXT-UNRESOLVED-7294-player-forecast-baseline-v1&quot;,
+  &quot;public_release_eligible&quot;: false,
+  &quot;release_stage&quot;: &quot;DEVELOPMENT_BASELINE&quot;,
+  &quot;source_feature&quot;: {
+    &quot;feature_record_id&quot;: &quot;statsbomb:3922240:7294:player-feature-baseline-v1&quot;,
+    &quot;feature_version&quot;: &quot;player-feature-baseline-v1&quot;,
+    &quot;source_match_id&quot;: 3922240
+  },
+  &quot;target&quot;: {
+    &quot;resolution_status&quot;: &quot;UNRESOLVED&quot;,
+    &quot;target_match_id&quot;: null,
+    &quot;target_type&quot;: &quot;NEXT_AVAILABLE_MATCH&quot;
+  },
+  &quot;valid_as_of&quot;: &quot;2024-01-29T00:00:00+00:00&quot;
+}</pre></details><details class="technical-details"><summary>النتيجة الفعلية الكاملة</summary><pre dir="ltr">{
+  &quot;actual&quot;: {
+    &quot;appeared&quot;: true,
+    &quot;assist&quot;: 0,
+    &quot;goal&quot;: 1,
+    &quot;minutes&quot;: 83.8,
+    &quot;started&quot;: 1,
+    &quot;yellow_card&quot;: 0
+  },
+  &quot;actual_outcome_id&quot;: &quot;ACTUAL-NEXT-UNRESOLVED-7294-player-forecast-baseline-v1-3922356&quot;,
+  &quot;actual_outcome_version&quot;: &quot;player-actual-outcome-v1&quot;,
+  &quot;adjudication_status&quot;: &quot;FINAL&quot;,
+  &quot;data_lineage&quot;: {
+    &quot;events_file_sha256&quot;: &quot;3dc2d18551e3e54de436362e2b8fd6e85fda426e8afa8569bd7334fd4ac16a13&quot;,
+    &quot;fixture_manifest&quot;: &quot;manifest.json&quot;,
+    &quot;lineups_file_sha256&quot;: &quot;980bb4ff842cb2f72260ded76ecf3403c5033bcb3e0ab0339f0699d17ed8b6ad&quot;,
+    &quot;match_file_sha256&quot;: &quot;fe245d7e6a38e33d7beaf9a50e28edc0ca09825c97f5fc35cec36e84175f2c0e&quot;,
+    &quot;upstream_commit&quot;: &quot;b0bc9f22dd77c206ddedc1d742893b3bbe64baec&quot;,
+    &quot;upstream_repository&quot;: &quot;statsbomb/open-data&quot;
+  },
+  &quot;player_id&quot;: 7294,
+  &quot;prediction_id&quot;: &quot;NEXT-UNRESOLVED-7294-player-forecast-baseline-v1&quot;,
+  &quot;source_feature_record_id&quot;: &quot;statsbomb:3922356:7294:player-feature-baseline-v1&quot;,
+  &quot;target_match_id&quot;: 3922356
+}</pre></details><details class="technical-details"><summary>التقييم الكامل</summary><pre dir="ltr">{
+  &quot;actual_outcome_id&quot;: &quot;ACTUAL-NEXT-UNRESOLVED-7294-player-forecast-baseline-v1-3922356&quot;,
+  &quot;error_assessment&quot;: {
+    &quot;human_review_required&quot;: false,
+    &quot;primary_class&quot;: &quot;NO_MATERIAL_ERROR&quot;,
+    &quot;reasons&quot;: [
+      &quot;No controlled material-error threshold was crossed in this single case.&quot;
+    ]
+  },
+  &quot;evaluated_at&quot;: &quot;2024-02-02T20:00:00+00:00&quot;,
+  &quot;evaluation_id&quot;: &quot;EVAL-NEXT-UNRESOLVED-7294-player-forecast-baseline-v1-3922356&quot;,
+  &quot;evaluation_status&quot;: &quot;COMPLETE&quot;,
+  &quot;evaluation_version&quot;: &quot;player-forecast-evaluation-v1&quot;,
+  &quot;learning_recommendation&quot;: {
+    &quot;action&quot;: &quot;COLLECT_MORE_RESOLVED_TARGETS&quot;,
+    &quot;auto_apply&quot;: false,
+    &quot;priority&quot;: &quot;HIGH&quot;,
+    &quot;rationale&quot;: &quot;One resolved forecast is insufficient for calibration or a production model change. Preserve the result and collect more out-of-sample targets.&quot;,
+    &quot;recommendation_id&quot;: &quot;LEARN-EVAL-NEXT-UNRESOLVED-7294-player-forecast-baseline-v1-3922356&quot;,
+    &quot;sample_size&quot;: 1
+  },
+  &quot;limitations&quot;: [
+    &quot;Single evaluated forecast only.&quot;,
+    &quot;No calibration claim is permitted from one observation.&quot;,
+    &quot;The error taxonomy is threshold-based and requires human review for material errors.&quot;,
+    &quot;The evaluation record cannot modify production model weights automatically.&quot;
+  ],
+  &quot;metrics&quot;: {
+    &quot;actual_minutes&quot;: 83.8,
+    &quot;binary_events&quot;: {
+      &quot;assist&quot;: {
+        &quot;brier_score&quot;: 0.008464,
+        &quot;calibration_row&quot;: {
+          &quot;forecast_probability&quot;: 0.092,
+          &quot;observed_outcome&quot;: 0
+        },
+        &quot;log_loss&quot;: 0.096511,
+        &quot;outcome&quot;: 0,
+        &quot;probability&quot;: 0.092
+      },
+      &quot;goal&quot;: {
+        &quot;brier_score&quot;: 0.738396,
+        &quot;calibration_row&quot;: {
+          &quot;forecast_probability&quot;: 0.1407,
+          &quot;observed_outcome&quot;: 1
+        },
+        &quot;log_loss&quot;: 1.961125,
+        &quot;outcome&quot;: 1,
+        &quot;probability&quot;: 0.1407
+      },
+      &quot;started&quot;: {
+        &quot;brier_score&quot;: 0.071129,
+        &quot;calibration_row&quot;: {
+          &quot;forecast_probability&quot;: 0.7333,
+          &quot;observed_outcome&quot;: 1
+        },
+        &quot;log_loss&quot;: 0.3102,
+        &quot;outcome&quot;: 1,
+        &quot;probability&quot;: 0.7333
+      },
+      &quot;yellow_card&quot;: {
+        &quot;brier_score&quot;: 0.013619,
+        &quot;calibration_row&quot;: {
+          &quot;forecast_probability&quot;: 0.1167,
+          &quot;observed_outcome&quot;: 0
+        },
+        &quot;log_loss&quot;: 0.12409,
+        &quot;outcome&quot;: 0,
+        &quot;probability&quot;: 0.1167
+      }
+    },
+    &quot;calibration_claim_eligible&quot;: false,
+    &quot;expected_minutes&quot;: 77.06,
+    &quot;mean_brier_score&quot;: 0.207902,
+    &quot;mean_log_loss&quot;: 0.622981,
+    &quot;minutes_absolute_error&quot;: 6.74
+  },
+  &quot;prediction_id&quot;: &quot;NEXT-UNRESOLVED-7294-player-forecast-baseline-v1&quot;,
+  &quot;resolution_id&quot;: &quot;RESOLVE-NEXT-UNRESOLVED-7294-player-forecast-baseline-v1-3922356&quot;,
+  &quot;target_match_id&quot;: 3922356
+}</pre></details><details class="technical-details"><summary>حزمة الأدلة والنسب</summary><pre dir="ltr">{
+  &quot;attribution&quot;: &quot;StatsBomb Open Data&quot;,
+  &quot;citations&quot;: [
+    {
+      &quot;citation_id&quot;: &quot;CIT-001&quot;,
+      &quot;claim_keys&quot;: [
+        &quot;target_match.appeared&quot;,
+        &quot;target_match.assist&quot;,
+        &quot;target_match.goal&quot;,
+        &quot;target_match.minutes&quot;,
+        &quot;target_match.started&quot;,
+        &quot;target_match.yellow_card&quot;
+      ],
+      &quot;document_id&quot;: &quot;PLAYER_ACTUAL-7294-e609ae22e720f2ea&quot;,
+      &quot;document_type&quot;: &quot;PLAYER_ACTUAL&quot;,
+      &quot;excerpt&quot;: &quot;Player 7294 target match 3922356 actual: appeared=True, started=1, minutes=83.8, goal=1, assist=0, yellow_card=0.&quot;,
+      &quot;lineage&quot;: {
+        &quot;events_file_sha256&quot;: &quot;3dc2d18551e3e54de436362e2b8fd6e85fda426e8afa8569bd7334fd4ac16a13&quot;,
+        &quot;fixture_manifest&quot;: &quot;manifest.json&quot;,
+        &quot;lineups_file_sha256&quot;: &quot;980bb4ff842cb2f72260ded76ecf3403c5033bcb3e0ab0339f0699d17ed8b6ad&quot;,
+        &quot;match_file_sha256&quot;: &quot;fe245d7e6a38e33d7beaf9a50e28edc0ca09825c97f5fc35cec36e84175f2c0e&quot;,
+        &quot;upstream_commit&quot;: &quot;b0bc9f22dd77c206ddedc1d742893b3bbe64baec&quot;,
+        &quot;upstream_repository&quot;: &quot;statsbomb/open-data&quot;
+      },
+      &quot;score&quot;: 0.5
+    },
+    {
+      &quot;citation_id&quot;: &quot;CIT-002&quot;,
+      &quot;claim_keys&quot;: [
+        &quot;evaluation.auto_apply&quot;,
+        &quot;evaluation.error_class&quot;,
+        &quot;evaluation.learning_action&quot;,
+        &quot;evaluation.mean_brier_score&quot;,
+        &quot;evaluation.mean_log_loss&quot;,
+        &quot;evaluation.minutes_absolute_error&quot;
+      ],
+      &quot;document_id&quot;: &quot;PLAYER_EVALUATION-7294-bd3208d0ae6047ca&quot;,
+      &quot;document_type&quot;: &quot;PLAYER_EVALUATION&quot;,
+      &quot;excerpt&quot;: &quot;Player 7294 forecast evaluation for match 3922356: mean_brier=0.207902, mean_log_loss=0.622981, minutes_error=6.74, error_class=NO_MATERIAL_ERROR, learning_action=COLLECT_MORE_RESOLVED_TARGETS, auto_apply=False.&quot;,
+      &quot;lineage&quot;: {
+        &quot;actual_outcome_id&quot;: &quot;ACTUAL-NEXT-UNRESOLVED-7294-player-forecast-baseline-v1-3922356&quot;,
+        &quot;evaluation_version&quot;: &quot;player-forecast-evaluation-v1&quot;,
+        &quot;prediction_id&quot;: &quot;NEXT-UNRESOLVED-7294-player-forecast-baseline-v1&quot;,
+        &quot;resolution_id&quot;: &quot;RESOLVE-NEXT-UNRESOLVED-7294-player-forecast-baseline-v1-3922356&quot;
+      },
+      &quot;score&quot;: 0.25
+    },
+    {
+      &quot;citation_id&quot;: &quot;CIT-003&quot;,
+      &quot;claim_keys&quot;: [
+        &quot;source_match.assists&quot;,
+        &quot;source_match.goals&quot;,
+        &quot;source_match.minutes&quot;,
+        &quot;source_match.shots&quot;,
+        &quot;source_match.started&quot;,
+        &quot;source_match.xg&quot;,
+        &quot;source_match.yellow_cards&quot;
+      ],
+      &quot;document_id&quot;: &quot;PLAYER_FEATURE-7294-429a9c2b7e9cb8a5&quot;,
+      &quot;document_type&quot;: &quot;PLAYER_FEATURE&quot;,
+      &quot;excerpt&quot;: &quot;Yoane Wissa source match 3922240: started=True, minutes=87.18, goals=0, assists=0, shots=2, xG=0.1196, yellow_cards=0.&quot;,
+      &quot;lineage&quot;: {
+        &quot;events_file_sha256&quot;: &quot;e03530c4e451f8b76e131a37773c7b8d7088e2d0c8814d168922c4f5b6f5663d&quot;,
+        &quot;fixture_manifest&quot;: &quot;manifest.json&quot;,
+        &quot;lineups_file_sha256&quot;: &quot;464e04cc4f25de3b2b984878e432e638da84b5a565493cf7c9c0d83f79d27a17&quot;,
+        &quot;match_file_sha256&quot;: &quot;dfd07f3d3599e7c901f548e1d75e7cf8b6143114e535c02294b58998effd11fd&quot;,
+        &quot;upstream_commit&quot;: &quot;b0bc9f22dd77c206ddedc1d742893b3bbe64baec&quot;,
+        &quot;upstream_repository&quot;: &quot;statsbomb/open-data&quot;
+      },
+      &quot;score&quot;: 0.25
+    },
+    {
+      &quot;citation_id&quot;: &quot;CIT-004&quot;,
+      &quot;claim_keys&quot;: [
+        &quot;forecast.assist_probability&quot;,
+        &quot;forecast.confidence_band&quot;,
+        &quot;forecast.confidence_score&quot;,
+        &quot;forecast.expected_minutes&quot;,
+        &quot;forecast.goal_probability&quot;,
+        &quot;forecast.starting_probability&quot;,
+        &quot;forecast.yellow_card_probability&quot;
+      ],
+      &quot;document_id&quot;: &quot;PLAYER_FORECAST-7294-dad8752adc010bfd&quot;,
+      &quot;document_type&quot;: &quot;PLAYER_FORECAST&quot;,
+      &quot;excerpt&quot;: &quot;Yoane Wissa frozen next-match forecast: start_probability=0.7333, expected_minutes=77.06, goal_probability=0.1407, assist_probability=0.092, yellow_card_probability=0.1167, confidence=LOW_TO_MEDIUM.&quot;,
+      &quot;lineage&quot;: {
+        &quot;events_file_sha256&quot;: &quot;e03530c4e451f8b76e131a37773c7b8d7088e2d0c8814d168922c4f5b6f5663d&quot;,
+        &quot;provider&quot;: &quot;statsbomb_open_data&quot;,
+        &quot;upstream_commit&quot;: &quot;b0bc9f22dd77c206ddedc1d742893b3bbe64baec&quot;,
+        &quot;upstream_repository&quot;: &quot;statsbomb/open-data&quot;
+      },
+      &quot;score&quot;: 0.25
+    }
+  ],
+  &quot;conflicts&quot;: [],
+  &quot;evidence_pack_id&quot;: &quot;PACK-f8ac4b20109d33a5&quot;,
+  &quot;last_updated&quot;: &quot;2026-05-02T14:23:45.490823&quot;,
+  &quot;license_reference&quot;: &quot;https://github.com/statsbomb/open-data/blob/master/LICENSE.pdf&quot;,
+  &quot;limitations&quot;: [
+    &quot;Lexical retrieval baseline only.&quot;,
+    &quot;No embeddings, reranker, or external vector database.&quot;,
+    &quot;Evidence may support explanation but cannot create probabilities.&quot;,
+    &quot;A Narrative Service must cite evidence IDs for every factual claim.&quot;
+  ],
+  &quot;pack_id&quot;: &quot;PACK-f8ac4b20109d33a5&quot;,
+  &quot;source_fixture&quot;: {
+    &quot;competition_id&quot;: 1267,
+    &quot;files&quot;: {
+      &quot;events.json&quot;: {
+        &quot;bytes&quot;: 3216159,
+        &quot;sha256&quot;: &quot;e03530c4e451f8b76e131a37773c7b8d7088e2d0c8814d168922c4f5b6f5663d&quot;
+      },
+      &quot;lineups.json&quot;: {
+        &quot;bytes&quot;: 23249,
+        &quot;sha256&quot;: &quot;464e04cc4f25de3b2b984878e432e638da84b5a565493cf7c9c0d83f79d27a17&quot;
+      },
+      &quot;match.json&quot;: {
+        &quot;bytes&quot;: 1849,
+        &quot;sha256&quot;: &quot;dfd07f3d3599e7c901f548e1d75e7cf8b6143114e535c02294b58998effd11fd&quot;
+      }
+    },
+    &quot;match_id&quot;: 3922240,
+    &quot;provider&quot;: &quot;statsbomb_open_data&quot;,
+    &quot;season_id&quot;: 107,
+    &quot;upstream_commit&quot;: &quot;b0bc9f22dd77c206ddedc1d742893b3bbe64baec&quot;,
+    &quot;upstream_repository&quot;: &quot;statsbomb/open-data&quot;
+  },
+  &quot;source_id&quot;: &quot;statsbomb_open_data&quot;,
+  &quot;source_ids&quot;: [
+    &quot;statsbomb_open_data&quot;
+  ],
+  &quot;source_name&quot;: &quot;StatsBomb Open Data&quot;,
+  &quot;target_fixture&quot;: {
+    &quot;competition_id&quot;: 1267,
+    &quot;files&quot;: {
+      &quot;events.json&quot;: {
+        &quot;bytes&quot;: 2294173,
+        &quot;sha256&quot;: &quot;3dc2d18551e3e54de436362e2b8fd6e85fda426e8afa8569bd7334fd4ac16a13&quot;
+      },
+      &quot;lineups.json&quot;: {
+        &quot;bytes&quot;: 22190,
+        &quot;sha256&quot;: &quot;980bb4ff842cb2f72260ded76ecf3403c5033bcb3e0ab0339f0699d17ed8b6ad&quot;
+      },
+      &quot;match.json&quot;: {
+        &quot;bytes&quot;: 1840,
+        &quot;sha256&quot;: &quot;fe245d7e6a38e33d7beaf9a50e28edc0ca09825c97f5fc35cec36e84175f2c0e&quot;
+      }
+    },
+    &quot;match_id&quot;: 3922356,
+    &quot;provider&quot;: &quot;statsbomb_open_data&quot;,
+    &quot;season_id&quot;: 107,
+    &quot;upstream_commit&quot;: &quot;b0bc9f22dd77c206ddedc1d742893b3bbe64baec&quot;,
+    &quot;upstream_repository&quot;: &quot;statsbomb/open-data&quot;
+  },
+  &quot;upstream_commit&quot;: &quot;b0bc9f22dd77c206ddedc1d742893b3bbe64baec&quot;
+}</pre></details></details></section>
+<footer>إصدار تجربة المستخدم: pb-03c-consumer-ux-v1 · DEMO_ONLY · public_release_eligible=false</footer></main></body>
+</html>
