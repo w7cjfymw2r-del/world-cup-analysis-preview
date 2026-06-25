@@ -115,6 +115,39 @@ jobs:
         continue-on-error: true
         uses: actions/deploy-pages@v4
 
+      - name: Verify deployed routes and manifest
+        id: live_verify
+        continue-on-error: true
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          set -euo pipefail
+          base="${PAGE_URL%/}/"
+          for attempt in $(seq 1 30); do
+            ok=true
+            for route in '' 'players/yoane-wissa.html' 'feedback.html' 'site-manifest.json'; do
+              status=$(curl -L -sS -o /tmp/pb03d-live -w '%{http_code}' "${base}${route}" || true)
+              if [ "$status" != "200" ]; then
+                ok=false
+                break
+              fi
+            done
+            if [ "$ok" = true ]; then
+              break
+            fi
+            sleep 5
+          done
+          test "$ok" = true
+          curl -L -sS "${base}site-manifest.json" -o /tmp/live-manifest.json
+          python - <<'PY'
+          import json
+          manifest = json.load(open('/tmp/live-manifest.json', encoding='utf-8'))
+          assert manifest['manifest_id'] == 'PB-GOLDEN-891aeb7c0113c103'
+          assert manifest['canonical_record_digest'] == '94635b0743ffd7267c436e268aedab3ff1d934bd8d3ba7f9cb55ca4ed8659638'
+          assert manifest['public_release_eligible'] is False
+          PY
+          echo "base_url=${base}" >> "$GITHUB_OUTPUT"
+
       - name: Persist deployment outcome
         if: always()
         env:
@@ -124,6 +157,7 @@ jobs:
           CONFIGURE_OUTCOME: ${{ steps.configure.outcome }}
           UPLOAD_OUTCOME: ${{ steps.upload.outcome }}
           DEPLOY_OUTCOME: ${{ steps.deployment.outcome }}
+          LIVE_VERIFY_OUTCOME: ${{ steps.live_verify.outcome }}
           PAGE_URL: ${{ steps.deployment.outputs.page_url }}
         run: |
           page_url="${PAGE_URL:-unavailable}"
@@ -138,6 +172,7 @@ jobs:
           - Configure Pages: ${CONFIGURE_OUTCOME}
           - Upload Pages artifact: ${UPLOAD_OUTCOME}
           - Deploy Pages: ${DEPLOY_OUTCOME}
+          - Live route and manifest verification: ${LIVE_VERIFY_OUTCOME}
           - Preview URL: ${page_url}
           - Workflow source commit: ${GITHUB_SHA}
           - Manifest ID: PB-GOLDEN-891aeb7c0113c103
@@ -151,6 +186,6 @@ jobs:
           git commit -m 'docs: record PB-03D Pages deployment outcome'
           git push origin HEAD:main
 
-      - name: Enforce successful deployment
-        if: steps.deployment.outcome != 'success'
+      - name: Enforce successful deployment and live verification
+        if: steps.deployment.outcome != 'success' || steps.live_verify.outcome != 'success'
         run: exit 1
