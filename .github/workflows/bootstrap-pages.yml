@@ -1,8 +1,10 @@
-name: Bootstrap and deploy controlled preview
+name: Verify and deploy controlled preview
 
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - DEPLOYMENT_STATUS.md
   workflow_dispatch:
 
 permissions:
@@ -24,22 +26,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Extract verified source artifact
-        run: |
-          rm -rf site
-          mkdir site
-          unzip -q pb03d-preview.zip -d site
-          test "$(find site -type f | wc -l)" -eq 4
-          touch site/.nojekyll
-
-      - name: Verify manifest identity and hashes
+      - name: Verify public allowlist and manifest hashes
         run: |
           python - <<'PY'
           import hashlib
           import json
           from pathlib import Path
 
-          root = Path('site')
+          root = Path('.')
+          expected = {
+              '.nojekyll',
+              'index.html',
+              'feedback.html',
+              'players/yoane-wissa.html',
+              'site-manifest.json',
+          }
+          for relative in expected:
+              assert (root / relative).is_file(), relative
+
           manifest = json.loads((root / 'site-manifest.json').read_text())
           assert manifest['manifest_id'] == 'PB-GOLDEN-891aeb7c0113c103'
           assert manifest['canonical_record_digest'] == '94635b0743ffd7267c436e268aedab3ff1d934bd8d3ba7f9cb55ca4ed8659638'
@@ -50,24 +54,17 @@ jobs:
               assert path.stat().st_size == entry['bytes'], entry['path']
               assert hashlib.sha256(path.read_bytes()).hexdigest() == entry['sha256'], entry['path']
           PY
-          grep -q 'players/yoane-wissa.html' site/index.html
-          grep -q '../index.html' site/players/yoane-wissa.html
-          grep -q 'id="copy-feedback"' site/feedback.html
+          grep -q 'players/yoane-wissa.html' index.html
+          grep -q '../index.html' players/yoane-wissa.html
+          grep -q 'id="copy-feedback"' feedback.html
 
-      - name: Materialize public allowlist in repository
+      - name: Stage Pages artifact from allowlist only
         run: |
-          mkdir -p players
-          cp site/index.html index.html
-          cp site/feedback.html feedback.html
-          cp site/site-manifest.json site-manifest.json
-          cp site/players/yoane-wissa.html players/yoane-wissa.html
-          cp site/.nojekyll .nojekyll
-          git rm -f pb03d-preview.zip
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add index.html feedback.html site-manifest.json players/yoane-wissa.html .nojekyll
-          git commit -m 'deploy: materialize verified PB-03D static allowlist'
-          git push
+          rm -rf public
+          mkdir -p public/players
+          cp index.html feedback.html site-manifest.json .nojekyll public/
+          cp players/yoane-wissa.html public/players/
+          test "$(find public -type f | wc -l)" -eq 5
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
@@ -77,8 +74,29 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
         with:
-          path: site
+          path: public
 
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Record successful deployment
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          cat > DEPLOYMENT_STATUS.md <<EOF
+          # PB-03D Public Preview Deployment
+
+          - Status: SUCCESS
+          - Preview URL: ${PAGE_URL}
+          - Verified source commit: ${GITHUB_SHA}
+          - Manifest ID: PB-GOLDEN-891aeb7c0113c103
+          - Canonical digest: 94635b0743ffd7267c436e268aedab3ff1d934bd8d3ba7f9cb55ca4ed8659638
+          - Workflow run: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+          - Deployed at UTC: $(date -u +'%Y-%m-%dT%H:%M:%SZ')
+          EOF
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add DEPLOYMENT_STATUS.md
+          git commit -m 'docs: record successful PB-03D preview deployment'
+          git push
