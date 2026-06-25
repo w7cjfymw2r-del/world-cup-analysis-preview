@@ -66,12 +66,42 @@ jobs:
           cp players/yoane-wissa.html public/players/
           test "$(find public -type f | wc -l)" -eq 5
 
-      - name: Configure Pages
+      - name: Ensure GitHub Pages site exists
+        id: enable_pages
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -u
+          api="https://api.github.com/repos/${GITHUB_REPOSITORY}/pages"
+          headers=(
+            -H "Accept: application/vnd.github+json"
+            -H "Authorization: Bearer ${GH_TOKEN}"
+            -H "X-GitHub-Api-Version: 2022-11-28"
+          )
+          get_status=$(curl -sS -o /tmp/pages-get.json -w '%{http_code}' "${headers[@]}" "$api")
+          echo "get_status=${get_status}" >> "$GITHUB_OUTPUT"
+          if [ "$get_status" = "200" ]; then
+            echo "create_status=not-needed" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ "$get_status" != "404" ]; then
+            cat /tmp/pages-get.json
+            echo "create_status=not-attempted" >> "$GITHUB_OUTPUT"
+            exit 1
+          fi
+          create_status=$(curl -sS -o /tmp/pages-create.json -w '%{http_code}' \
+            -X POST "${headers[@]}" \
+            -d '{"build_type":"workflow"}' \
+            "$api")
+          echo "create_status=${create_status}" >> "$GITHUB_OUTPUT"
+          cat /tmp/pages-create.json || true
+          test "$create_status" = "201"
+
+      - name: Configure Pages metadata
         id: configure
         continue-on-error: true
         uses: actions/configure-pages@v5
-        with:
-          enablement: true
 
       - name: Upload Pages artifact
         id: upload
@@ -88,6 +118,9 @@ jobs:
       - name: Persist deployment outcome
         if: always()
         env:
+          ENABLE_OUTCOME: ${{ steps.enable_pages.outcome }}
+          PAGES_GET_STATUS: ${{ steps.enable_pages.outputs.get_status }}
+          PAGES_CREATE_STATUS: ${{ steps.enable_pages.outputs.create_status }}
           CONFIGURE_OUTCOME: ${{ steps.configure.outcome }}
           UPLOAD_OUTCOME: ${{ steps.upload.outcome }}
           DEPLOY_OUTCOME: ${{ steps.deployment.outcome }}
@@ -97,6 +130,9 @@ jobs:
           cat > DEPLOYMENT_STATUS.md <<EOF
           # PB-03D Public Preview Deployment
 
+          - Enable Pages API step: ${ENABLE_OUTCOME}
+          - Pages GET HTTP status: ${PAGES_GET_STATUS:-unavailable}
+          - Pages CREATE HTTP status: ${PAGES_CREATE_STATUS:-unavailable}
           - Configure Pages: ${CONFIGURE_OUTCOME}
           - Upload Pages artifact: ${UPLOAD_OUTCOME}
           - Deploy Pages: ${DEPLOY_OUTCOME}
