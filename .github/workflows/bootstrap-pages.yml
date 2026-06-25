@@ -1,0 +1,84 @@
+name: Bootstrap and deploy controlled preview
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Extract verified source artifact
+        run: |
+          rm -rf site
+          mkdir site
+          unzip -q pb03d-preview.zip -d site
+          test "$(find site -type f | wc -l)" -eq 4
+          touch site/.nojekyll
+
+      - name: Verify manifest identity and hashes
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+
+          root = Path('site')
+          manifest = json.loads((root / 'site-manifest.json').read_text())
+          assert manifest['manifest_id'] == 'PB-GOLDEN-891aeb7c0113c103'
+          assert manifest['canonical_record_digest'] == '94635b0743ffd7267c436e268aedab3ff1d934bd8d3ba7f9cb55ca4ed8659638'
+          assert manifest['public_release_eligible'] is False
+          for entry in manifest['files']:
+              path = root / entry['path']
+              assert path.is_file(), entry['path']
+              assert path.stat().st_size == entry['bytes'], entry['path']
+              assert hashlib.sha256(path.read_bytes()).hexdigest() == entry['sha256'], entry['path']
+          PY
+          grep -q 'players/yoane-wissa.html' site/index.html
+          grep -q '../index.html' site/players/yoane-wissa.html
+          grep -q 'id="copy-feedback"' site/feedback.html
+
+      - name: Materialize public allowlist in repository
+        run: |
+          mkdir -p players
+          cp site/index.html index.html
+          cp site/feedback.html feedback.html
+          cp site/site-manifest.json site-manifest.json
+          cp site/players/yoane-wissa.html players/yoane-wissa.html
+          cp site/.nojekyll .nojekyll
+          git rm -f pb03d-preview.zip
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add index.html feedback.html site-manifest.json players/yoane-wissa.html .nojekyll
+          git commit -m 'deploy: materialize verified PB-03D static allowlist'
+          git push
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
